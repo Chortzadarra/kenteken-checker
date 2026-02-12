@@ -44,17 +44,19 @@ export async function getVoertuigData(kenteken) {
 
 export function beoordeelGeschiktheid(voertuig) {
   const redenen = []
-  let geschikt = true
   let geschiktheidScore = 'Geschikt'
   const nu = new Date()
 
-  // 1. Maximaal toegestane massa (Focus enkel op de grens van 3500kg)
+  // 1. Maximaal toegestane massa
   const maxMassa = parseInt(voertuig.toegestane_maximum_massa_voertuig)
   if (maxMassa > 3500) {
     redenen.push('⚠️ LET OP: Maximaal gewicht >3500kg - groot rijbewijs (C/C1) vereist!')
     geschiktheidScore = 'Mogelijk'
   } else if (maxMassa === 3500) {
     redenen.push('✅ Ideaal maximaal gewicht (3500kg) - perfect voor B-rijbewijs')
+  } else if (maxMassa < 3000) {
+    redenen.push('❌ Maximaal gewicht is te laag (<3000kg) voor een zinvolle camperombouw.')
+    geschiktheidScore = 'Ongeschikt'
   }
 
   // 2. Hoogte check (Blok-eis)
@@ -65,25 +67,30 @@ export function beoordeelGeschiktheid(voertuig) {
     redenen.push('✅ Voertuighoogte lijkt voldoende voor de 170cm stahoogte-eis.')
   }
 
-  // 3. Emissieklasse (Nieuwe logica: < Euro 5 = 'Mogelijk')
+  // 3. Emissieklasse
   const emissieklasse = voertuig.emissiecode_omschrijving
   if (emissieklasse) {
     const emissieCijfer = parseInt(emissieklasse.replace(/\D/g, ''))
-
     if (emissieCijfer >= 6) {
       redenen.push(`✅ Euro ${emissieCijfer}: Uitstekende reisvrijheid in milieuzones.`)
     } else if (emissieCijfer === 5) {
       redenen.push(`✅ Euro 5: Goede toegang, maar let op toekomstige beperkingen.`)
     } else {
       redenen.push(`⚠️ Euro ${emissieCijfer || emissieklasse}: Lage emissieklasse beperkt je toegang tot veel steden.`)
-      // Zet score op 'Mogelijk' als deze nog op 'Geschikt' stond
-      if (geschiktheidScore === 'Geschikt') {
-        geschiktheidScore = 'Mogelijk'
-      }
+      if (geschiktheidScore === 'Geschikt') geschiktheidScore = 'Mogelijk'
     }
   }
 
-  // 4. BPM Berekening (Met vermelding dat het een schatting is)
+  // 4. NAP / Tellerstand check
+  const tellerstand = voertuig.tellerstandoordeel
+  if (tellerstand === 'Logisch') {
+    redenen.push('✅ Tellerstand logisch (NAP)')
+  } else {
+    // Bij 'Onlogisch', 'Geen oordeel' of als het veld leeg is
+    redenen.push('⚠️ LET OP: Geen logische tellerstand (NAP) gevonden. Controleer de onderhoudshistorie extra goed!')
+  }
+
+  // 5. BPM Berekening
   const brutoBpm = parseInt(voertuig.bruto_bpm) || 0
   const datumToelatingStr = voertuig.datum_eerste_toelating
   let restBpm = 0
@@ -93,7 +100,6 @@ export function beoordeelGeschiktheid(voertuig) {
     const maand = parseInt(datumToelatingStr.substring(4, 6)) - 1
     const dag = parseInt(datumToelatingStr.substring(6, 8))
     const datumToelating = new Date(jaar, maand, dag)
-
     const maandenOud = (nu.getFullYear() - datumToelating.getFullYear()) * 12 + (nu.getMonth() - datumToelating.getMonth())
 
     if (maandenOud < 210) {
@@ -105,22 +111,18 @@ export function beoordeelGeschiktheid(voertuig) {
 
       korting = Math.min(korting, 100)
       restBpm = Math.max(0, Math.round(brutoBpm * (1 - (korting / 100))))
-      redenen.push(`💰 Geschatte rest-BPM: €${restBpm.toLocaleString('nl-NL')} (Let op: dit is een schatting).`)
+      redenen.push(`💰 Geschatte rest-BPM: €${restBpm.toLocaleString('nl-NL')} (Schatting op basis van leeftijd).`)
     } else {
       redenen.push('✅ Geen rest-BPM meer verschuldigd (voertuig ouder dan 17,5 jaar).')
     }
   }
 
-  // 5. Overige checks (APK)
-  if (voertuig.vervaldatum_apk_dt) {
-    const apkDatum = new Date(voertuig.vervaldatum_apk_dt)
-    if (apkDatum < nu) {
-      redenen.push('❌ APK is verlopen!')
-    }
+  // 6. APK
+  if (voertuig.vervaldatum_apk_dt && new Date(voertuig.vervaldatum_apk_dt) < nu) {
+    redenen.push('❌ APK is verlopen!')
   }
 
   return {
-    geschikt: geschiktheidScore !== 'Ongeschikt',
     redenen,
     score: geschiktheidScore,
     restBpm

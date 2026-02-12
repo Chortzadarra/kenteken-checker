@@ -42,8 +42,8 @@ const checkKenteken = async () => {
       hoogte: voertuigData.hoogte_voertuig,
       brutoBpm: voertuigData.bruto_bpm,
       restBpm: beoordeling.restBpm,
-      geschikt: beoordeling.geschikt,
       score: beoordeling.score,
+      geschikt: beoordeling.score !== 'Ongeschikt',
       redenen: beoordeling.redenen
     }
   } catch (err) {
@@ -79,8 +79,8 @@ const getMassaClass = (massa) => {
 
 const getMassaLabel = (massa) => {
   if (massa >= 3500) return 'Ideaal'
-  if (massa >= 3000) return 'Mogelijk'
-  return 'Te laag'
+  if (massa >= 3000) return 'Mogelijk - lichtgewicht inbouw nodig'
+  return 'Te laag!❌'
 }
 
 const getEmissieUitleg = (emissieklasse) => {
