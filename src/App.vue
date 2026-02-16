@@ -198,7 +198,7 @@ const getEmissieUitleg = (emissieklasse) => {
       De maker is niet aansprakelijk voor eventuele onjuistheden of beslissingen op basis van deze tool.
     </p>
   </footer>
-  </div> ```
+  </div>
 </template>
 
 <style scoped>
