@@ -1,44 +1,31 @@
-# kenteken-checker
+# Kenteken Checker (Vue 3 + Vite)
+Een interactieve webapplicatie waarmee gebruikers voertuiggegevens kunnen ophalen op basis van een Nederlands kenteken. Dit project is gebouwd om mijn vaardigheden in Vue 3, Asynchrone API-communicatie en Frontend architectuur te demonstreren.
 
-This template should help get you started developing with Vue 3 in Vite.
+## Features
+Real-time Data: Koppeling met de RDW Open Data API.
+Input Validatie: Automatische formattering en validatie van Nederlandse kentekens.
+Responsive Design: Volledig geoptimaliseerd voor desktop en mobiel gebruik.
+Foutafhandeling: Gebruiksvriendelijke meldingen bij ongeldige kentekens of API-fouten.
 
-## Recommended IDE Setup
+## Tech Stack
+Framework: Vue 3 (Composition API)
+Build Tool: Vite
+Styling: CSS3 / Modern CSS (gericht op clean UI)
+Data Source: RDW Open Data (JSON API)
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## Waarom dit project?
+Dit project is ontstaan uit mijn achtergrond als ondernemer. Voordat ik de overstap maakte naar Software Engineering, had ik een eigen bedrijf in het bouwen van campers.
+Het probleem: Klanten vroegen mij vaak om advies bij de aankoop van een bestelbus. Om snel de juiste technische specificaties (zoals gewicht, emissieklasse en motorvermogen) te controleren, moest ik handmatig data opzoeken.
+De oplossing: Hoewel ik inmiddels volledig gefocust ben op software ontwikkeling, vond ik dit een perfecte case om een praktische tool te bouwen. De applicatie automatiseert het ophalen van voertuiggegevens via de RDW API.
+De transitie: Dit project markeert mijn overgang van de fysieke bouw naar de digitale bouw. Waar ik voorheen campers ontwierp, vertaal ik nu complexe functionele behoeften naar schone, werkende code in Vue 3 en JavaScript.
 
-## Recommended Browser Setup
+Installatie & Gebruik
+```Bash
+# Clone de repository
+git clone https://github.com/Chortzadarra/kenteken-checker.git
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
+# Installeer dependencies
 npm install
-```
 
-### Compile and Hot-Reload for Development
-
-```sh
+# Start de development server
 npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
