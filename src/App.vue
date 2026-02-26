@@ -307,7 +307,7 @@ button:disabled { background-color: #cbd5e1; }
 
 .specs-grid { 
   display: grid; 
-  grid-template-colums: repeat(2, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 15px; 
   margin-bottom: 30px; 
 }
