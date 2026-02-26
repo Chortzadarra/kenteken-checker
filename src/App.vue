@@ -321,6 +321,7 @@ button:disabled { background-color: #cbd5e1; }
   display: flex;
   flex-direction: column;
   justify-content: center;
+  min-height: 180px;
 }
   
 .bpm-card { 
