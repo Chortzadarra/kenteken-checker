@@ -29,3 +29,7 @@ npm install
 
 # Start de development server
 npm run dev
+```
+
+## Preview
+![Desktop Preview](./CamperBouwCheck.gif)
