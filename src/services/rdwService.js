@@ -47,6 +47,10 @@ export function beoordeelGeschiktheid(voertuig) {
   let geschiktheidScore = 'Geschikt'
   const nu = new Date()
 
+  // 0. Brandstop bepalen
+  const brandstof = voertuig.brandstof_omschrijving?.toLowerCase() || ''
+  const isDiesel = brandstof.includes('diesel')
+
   // 1. Check op huidige Voertuigsoort / Inrichting
   const inrichting = voertuig.inrichting?.toLowerCase() || ''
   const voertuigsoort = voertuig.voertuigsoort?.toLowerCase() || ''
@@ -83,17 +87,26 @@ export function beoordeelGeschiktheid(voertuig) {
     }
   }
 
-  // 4. Emissieklasse
-  const emissieklasse = voertuig.emissiecode_omschrijving
-  if (emissieklasse) {
-    const emissieCijfer = parseInt(emissieklasse.replace(/\D/g, ''))
-    if (emissieCijfer < 5) {
-      redenen.push(`⚠️ Euro ${emissieCijfer || emissieklasse}: Oude emissieklasse. Beperkte toegang tot milieuzones.`)
-      if (geschiktheidScore === 'Geschikt') geschiktheidScore = 'Mogelijk'
+// 4. Emissieklasse (brandstof-specifiek)
+const emissieklasse = voertuig.emissiecode_omschrijving
+if (emissieklasse) {
+  const emissieCijfer = parseInt(emissieklasse.replace(/\D/g, ''))
+  
+  if (isDiesel) {
+    if (emissieCijfer >= 6) {
+      redenen.push(`✅ Diesel Euro 6: Je hebt hiermee de meeste vrijheid in milieuzones (ook de strengste steden).`)
+    } else if (emissieCijfer === 5) {
+      redenen.push(`✅ Diesel Euro 5: Prima keuze voor de meeste reizen. Alleen in sommige stadscentra ben je niet meer welkom.`)
     } else {
-      redenen.push(`✅ Euro ${emissieCijfer}: Prima toegang tot de meeste milieuzones.`)
+      redenen.push(`⚠️ Diesel Euro ${emissieCijfer || emissieklasse}: Oudere diesel. Dit beperkt je toegang tot milieuzones aanzienlijk.`)
+      // Alleen bij Euro 3 of lager de score echt naar 'Mogelijk' zetten
+      if (emissieCijfer <= 3 && geschiktheidScore === 'Geschikt') geschiktheidScore = 'Mogelijk'
     }
+  } else {
+    // Benzine / LPG / Electrisch
+    redenen.push(`✅ ${brandstof.charAt(0).toUpperCase() + brandstof.slice(1)}: Met een benzine- of LPG-motor heb je momenteel nauwelijks last van milieurerestricties.`)
   }
+}
 
   // 5. NAP / Tellerstand check (Teruggeplaatst)
   const tellerstand = voertuig.tellerstandoordeel
