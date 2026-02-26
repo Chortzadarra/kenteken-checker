@@ -1,4 +1,5 @@
 # Kenteken Checker (Vue 3 + Vite)
+**Bekijk de live demo:** [camperbouwcheck.nl](https://camperbouwcheck.nl)
 Een interactieve webapplicatie waarmee gebruikers voertuiggegevens kunnen ophalen op basis van een Nederlands kenteken. Dit project is gebouwd te kunnen voorzien in de behoefte van een snelle, camperbouw gerelateerde, kentekencheck.
 
 ## Features
