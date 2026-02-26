@@ -307,8 +307,9 @@ button:disabled { background-color: #cbd5e1; }
 
 .specs-grid { 
   display: grid; 
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
-  gap: 15px; margin-bottom: 30px; 
+  grid-template-colums: repeat(2, 1fr);
+  gap: 15px; 
+  margin-bottom: 30px; 
 }
   
 .spec-card { 
@@ -317,10 +318,29 @@ button:disabled { background-color: #cbd5e1; }
   border-radius: 12px; 
   box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
   text-align: center; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
   
 .bpm-card { 
   border-top: 5px solid #3498db; 
+}
+
+.spec-card-emissieklasse {
+  grid-column: span 1; 
+}
+
+.emissieklasse-uitleg {
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+@media (max-width: 480px) {
+  .specs-grid {
+    grid-template-columns: 1fr;
+  }
 }
   
 .spec-label { 
