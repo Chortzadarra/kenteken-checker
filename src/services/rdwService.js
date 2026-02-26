@@ -47,93 +47,97 @@ export function beoordeelGeschiktheid(voertuig) {
   let geschiktheidScore = 'Geschikt'
   const nu = new Date()
 
-  // 1. Maximaal toegestane massa
-  const maxMassa = parseInt(voertuig.toegestane_maximum_massa_voertuig)
-  if (maxMassa > 3500) {
-    redenen.push('⚠️ LET OP: Maximaal gewicht >3500kg - groot rijbewijs (C/C1) vereist!')
+  // 1. Check op huidige Voertuigsoort / Inrichting
+  const inrichting = voertuig.inrichting?.toLowerCase() || ''
+  const voertuigsoort = voertuig.voertuigsoort?.toLowerCase() || ''
+
+  if (inrichting.includes('kampeerwagen') || voertuigsoort.includes('kampeerwagen')) {
+    redenen.push('ℹ️ Dit voertuig staat al geregistreerd als kampeerwagen. Ombouwkeuring en rest-BPM zijn waarschijnlijk niet meer nodig.')
+  } else if (!voertuigsoort.includes('bedrijfsauto')) {
+    redenen.push('⚠️ Dit is momenteel geen bedrijfsauto (geel kenteken). De ombouwregels en BPM kunnen afwijken.')
     geschiktheidScore = 'Mogelijk'
-  } else if (maxMassa === 3500) {
-    redenen.push('✅ Ideaal maximaal gewicht (3500kg) - perfect voor B-rijbewijs')
-  } else if (maxMassa < 3000) {
-    redenen.push('❌ Maximaal gewicht is te laag (<3000kg) voor een zinvolle camperombouw.')
+  }
+
+  // 2. Maximaal toegestane massa
+  const maxMassa = parseInt(voertuig.toegestane_maximum_massa_voertuig) || 0
+  if (maxMassa > 3500) {
+    redenen.push('⚠️ LET OP: Gewicht >3500kg - C1 (camper) rijbewijs vereist!')
+    geschiktheidScore = 'Mogelijk'
+  } else if (maxMassa >= 3000) {
+    redenen.push('✅ Goede gewichtsklasse voor een volwaardige inbouw.')
+  } else if (maxMassa >= 2700) {
+    redenen.push('⚠️ Let op je gewicht: gebruik lichtgewicht materialen om onder de 3500kg grens te blijven.')
+    if (geschiktheidScore === 'Geschikt') geschiktheidScore = 'Mogelijk'
+  } else {
+    redenen.push('❌ Maximaal gewicht is erg laag - weinig laadvermogen over voor inbouw en bagage.')
     geschiktheidScore = 'Ongeschikt'
   }
 
-  // 2. Hoogte check (Blok-eis)
-  const hoogte = parseInt(voertuig.hoogte_voertuig)
-  if (hoogte && hoogte < 185) {
-    redenen.push('⚠️ Let op: deze bus is waarschijnlijk te laag zonder hefdak (stahoogte eis 170cm).')
-  } else if (hoogte >= 185) {
-    redenen.push('✅ Voertuighoogte lijkt voldoende voor de 170cm stahoogte-eis.')
-  }
-
-  // 3. Emissieklasse
-  const emissieklasse = voertuig.emissiecode_omschrijving
-  if (emissieklasse) {
-    const emissieCijfer = parseInt(emissieklasse.replace(/\D/g, ''))
-    if (emissieCijfer >= 6) {
-      redenen.push(`✅ Euro ${emissieCijfer}: Uitstekende reisvrijheid in milieuzones.`)
-    } else if (emissieCijfer === 5) {
-      redenen.push(`✅ Euro 5: Goede toegang, maar let op toekomstige beperkingen.`)
+  // 3. Hoogte & Blok-eis
+  const hoogte = parseInt(voertuig.hoogte_voertuig) || 0
+  if (hoogte > 0) {
+    if (hoogte < 245) {
+      redenen.push('💡 Hoogte: Waarschijnlijk heb je een hefdak nodig om aan de fiscale stahoogte-eis (170cm) te voldoen.')
     } else {
-      redenen.push(`⚠️ Euro ${emissieCijfer || emissieklasse}: Lage emissieklasse beperkt je toegang tot veel steden.`)
-      if (geschiktheidScore === 'Geschikt') geschiktheidScore = 'Mogelijk'
+      redenen.push('✅ Hoogte: Deze bus lijkt hoog genoeg om direct aan de fiscale stahoogte-eis te voldoen.')
     }
   }
 
-  // 4. NAP / Tellerstand check
+  // 4. Emissieklasse
+  const emissieklasse = voertuig.emissiecode_omschrijving
+  if (emissieklasse) {
+    const emissieCijfer = parseInt(emissieklasse.replace(/\D/g, ''))
+    if (emissieCijfer < 5) {
+      redenen.push(`⚠️ Euro ${emissieCijfer || emissieklasse}: Oude emissieklasse. Beperkte toegang tot milieuzones.`)
+      if (geschiktheidScore === 'Geschikt') geschiktheidScore = 'Mogelijk'
+    } else {
+      redenen.push(`✅ Euro ${emissieCijfer}: Prima toegang tot de meeste milieuzones.`)
+    }
+  }
+
+  // 5. NAP / Tellerstand check (Teruggeplaatst)
   const tellerstand = voertuig.tellerstandoordeel
   if (tellerstand === 'Logisch') {
     redenen.push('✅ Tellerstand logisch (NAP)')
   } else {
-    // Bij 'Onlogisch', 'Geen oordeel' of als het veld leeg is
-    redenen.push('⚠️ LET OP: Geen logische tellerstand (NAP) gevonden. Controleer de onderhoudshistorie extra goed!')
+    redenen.push('⚠️ LET OP: Geen logische tellerstand (NAP) gevonden. Controleer de historie extra goed!')
   }
 
-  // 5. Verbeterde BPM Berekening (Forfaitaire tabel 2024/2025)
-const brutoBpm = parseInt(voertuig.bruto_bpm) || 0;
-const datumToelatingStr = voertuig.datum_eerste_toelating;
-let restBpm = 0;
+  // 6. Verbeterde BPM Berekening (Forfaitaire tabel 2024-2026)
+  const brutoBpm = parseInt(voertuig.bruto_bpm) || 0
+  const datumToelatingStr = voertuig.datum_eerste_toelating
+  let restBpm = 0
 
-if (brutoBpm > 0 && datumToelatingStr) {
-    const jaar = parseInt(datumToelatingStr.substring(0, 4));
-    const maand = parseInt(datumToelatingStr.substring(4, 6)) - 1;
-    const dag = parseInt(datumToelatingStr.substring(6, 8));
-    const datumToelating = new Date(jaar, maand, dag);
-    const nu = new Date();
-    
-    // Bereken het verschil in volledige maanden
-    let maandenOud = (nu.getFullYear() - datumToelating.getFullYear()) * 12 + (nu.getMonth() - datumToelating.getMonth());
-    if (nu.getDate() < datumToelating.getDate()) maandenOud--; // Alleen volle maanden tellen
-
-    if (maandenOud >= 210) {
-        redenen.push('✅ Geen rest-BPM meer verschuldigd (voertuig ouder dan 17,5 jaar).');
-        restBpm = 0;
+  if (brutoBpm > 0 && datumToelatingStr) {
+    if (inrichting.includes('kampeerwagen')) {
+      restBpm = 0
     } else {
-        let percentage = 0;
-        
-        // Officiële tabel stappen (Forfaitaire tabel)
-        if (maandenOud < 1) percentage = 100; // 0% korting
-        else if (maandenOud < 3)  percentage = 88; // 12% korting
-        else if (maandenOud < 6)  percentage = 79; // 21% korting
-        else if (maandenOud < 9)  percentage = 67; // 33% korting
-        else if (maandenOud < 12) percentage = 58; // 42% korting
+      const jaar = parseInt(datumToelatingStr.substring(0, 4))
+      const maand = parseInt(datumToelatingStr.substring(4, 6)) - 1
+      const dag = parseInt(datumToelatingStr.substring(6, 8))
+      const datumToelating = new Date(jaar, maand, dag)
+      
+      let maandenOud = (nu.getFullYear() - datumToelating.getFullYear()) * 12 + (nu.getMonth() - datumToelating.getMonth())
+      if (nu.getDate() < datumToelating.getDate()) maandenOud--
+
+      if (maandenOud >= 210) {
+        redenen.push('✅ Voertuig ouder dan 17,5 jaar: Geen rest-BPM meer verschuldigd.')
+        restBpm = 0
+      } else {
+        let percentage = 0
+        if (maandenOud < 1) percentage = 100
+        else if (maandenOud < 3)  percentage = 88
+        else if (maandenOud < 6)  percentage = 79
+        else if (maandenOud < 9)  percentage = 67
+        else if (maandenOud < 12) percentage = 58
         else {
-            // Na 1 jaar: 37% + 4,7% per extra jaar, maar makkelijker via de tabel:
-            // Voor een snelle webapp is jouw lineaire benadering na 1 jaar prima, 
-            // mits je de startwaarde corrigeert.
-            const korting = 37 + (maandenOud * 0.5); // Benadering
-            percentage = Math.max(0, 100 - korting);
+          const korting = 37 + (maandenOud * 0.5)
+          percentage = Math.max(0, 100 - korting)
         }
-
-        restBpm = Math.max(0, Math.round((brutoBpm * percentage) / 100));
-        redenen.push(`💰 Geschatte rest-BPM: €${restBpm.toLocaleString('nl-NL')} (Schatting op basis van leeftijd).`);
+        restBpm = Math.max(0, Math.round((brutoBpm * percentage) / 100))
+        redenen.push(`💰 Rest-BPM indicatie: €${restBpm.toLocaleString('nl-NL')}`)
+      }
     }
-}
-
-  // 6. APK
-  if (voertuig.vervaldatum_apk_dt && new Date(voertuig.vervaldatum_apk_dt) < nu) {
-    redenen.push('❌ APK is verlopen!')
   }
 
   return {
