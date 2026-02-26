@@ -19,7 +19,7 @@ Het probleem: Klanten vroegen mij vaak om advies bij de aankoop van een bestelbu
 De oplossing: Hoewel ik inmiddels volledig gefocust ben op software ontwikkeling, vond ik dit een perfecte case om een praktische tool te bouwen. De applicatie automatiseert het ophalen van voertuiggegevens via de RDW API.
 De transitie: Dit project markeert mijn overgang van de fysieke bouw naar de digitale bouw. Waar ik voorheen campers ontwierp, vertaal ik nu complexe functionele behoeften naar schone, werkende code in Vue 3 en JavaScript.
 
-Installatie & Gebruik
+## Installatie & Gebruik
 ```Bash
 # Clone de repository
 git clone https://github.com/Chortzadarra/kenteken-checker.git
