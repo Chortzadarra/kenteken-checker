@@ -2,10 +2,10 @@
 Een interactieve webapplicatie waarmee gebruikers voertuiggegevens kunnen ophalen op basis van een Nederlands kenteken. Dit project is gebouwd te kunnen voorzien in de behoefte van een snelle, camperbouw gerelateerde, kentekencheck.
 
 ## Features
-Real-time Data: Koppeling met de RDW Open Data API.
-Input Validatie: Automatische formattering en validatie van Nederlandse kentekens.
-Responsive Design: Volledig geoptimaliseerd voor desktop en mobiel gebruik.
-Foutafhandeling: Gebruiksvriendelijke meldingen bij ongeldige kentekens of API-fouten.
+* Real-time Data: Koppeling met de RDW Open Data API.
+* Input Validatie: Automatische formattering en validatie van Nederlandse kentekens.
+* Responsive Design: Volledig geoptimaliseerd voor desktop en mobiel gebruik.
+* Foutafhandeling: Gebruiksvriendelijke meldingen bij ongeldige kentekens of API-fouten.
 
 ## Tech Stack
 
@@ -16,8 +16,8 @@ Foutafhandeling: Gebruiksvriendelijke meldingen bij ongeldige kentekens of API-f
 * **Data Source:** RDW Open Data (JSON API)
 
 ### Development Environment
-* **IDE:** IntelliJ IDEA & VS Code g
-* **Version Control:** Github
+* **IDE:** IntelliJ IDEA & VS Code 
+* **Version Control:** Git & GitHub
 * **API Testing:** Gebruik van Browser DevTools voor het monitoren van netwerk-requests
 
 ## Waarom dit project?
