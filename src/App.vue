@@ -102,7 +102,7 @@ const getEmissieUitleg = (emissieklasse) => {
 
 <template>
   <div class="container">
-    <h1>CamperBouwCheck</h1>
+    <h1>CamperBouwCheck.nl</h1>
     <p class="subtitle">Voer een kenteken in en zie meteen of deze bus klaar is voor ombouw!</p>
 
     <div class="input-section">
