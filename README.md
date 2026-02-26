@@ -23,7 +23,7 @@ Foutafhandeling: Gebruiksvriendelijke meldingen bij ongeldige kentekens of API-f
 ## Waarom dit project?
 Dit project is ontstaan uit mijn achtergrond als ondernemer. Voordat ik de overstap maakte naar Software Engineering, had ik een eigen bedrijf in het bouwen van campers.
 Het probleem: Klanten vroegen mij vaak om advies bij de aankoop van een bestelbus. Om snel de juiste technische specificaties (zoals gewicht, emissieklasse en motorvermogen) te controleren, moest ik handmatig data opzoeken.
-De oplossing: Hoewel ik inmiddels volledig gefocust ben op software ontwikkeling, vond ik dit een perfecte case om een praktische tool te bouwen. De applicatie automatiseert het ophalen van voertuiggegevens via de RDW API.
+De oplossing: De applicatie automatiseert het ophalen van voertuiggegevens via de RDW API.
 De transitie: Dit project markeert mijn overgang van de fysieke bouw naar de digitale bouw. Waar ik voorheen campers ontwierp, vertaal ik nu complexe functionele behoeften naar schone, werkende code in Vue 3 en JavaScript.
 
 ## Installatie & Gebruik
