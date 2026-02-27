@@ -26,7 +26,6 @@ Een interactieve webapplicatie waarmee gebruikers voertuiggegevens kunnen ophale
 Dit project is ontstaan uit mijn achtergrond als ondernemer. Voordat ik de overstap maakte naar Software Engineering, had ik een eigen bedrijf in het bouwen van campers.
 Het probleem: Klanten vroegen mij vaak om advies bij de aankoop van een bestelbus. Om snel de juiste technische specificaties (zoals gewicht, emissieklasse en motorvermogen) te controleren, moest ik handmatig data opzoeken.
 De oplossing: De applicatie automatiseert het ophalen van voertuiggegevens via de RDW API.
-De transitie: Dit project markeert mijn overgang van de fysieke bouw naar de digitale bouw. Waar ik voorheen campers ontwierp, vertaal ik nu complexe functionele behoeften naar schone, werkende code in Vue 3 en JavaScript.
 
 ## Installatie & Gebruik
 ```Bash
