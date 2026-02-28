@@ -108,7 +108,7 @@ if (emissieklasse) {
   }
 }
 
-  // 5. NAP / Tellerstand check (Teruggeplaatst)
+  // 5. NAP / Tellerstand check
   const tellerstand = voertuig.tellerstandoordeel
   if (tellerstand === 'Logisch') {
     redenen.push('✅ Tellerstand logisch (NAP)')
